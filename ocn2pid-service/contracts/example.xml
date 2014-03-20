@@ -1,0 +1,13 @@
+<pidList xmlns="http://oss.dbc.dk/ns/oclc-integration/ocn2pid/20140320" resource="http://oclc-int.dbc.dk/ocn2pid/ocn-collection/1234">
+  <pid value="1-katalog:42">
+    <libraryNumber>1</libraryNumber>
+    <format>katalog</format>
+    <idNumber>42</idNumber>
+  </pid>
+  <pid value="2-katalog:43">
+    <libraryNumber>2</libraryNumber>
+    <format>katalog</format>
+    <idNumber>43</idNumber>
+  </pid>
+</pidList>
+

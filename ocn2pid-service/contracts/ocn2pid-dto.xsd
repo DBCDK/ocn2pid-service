@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://oss.dbc.dk/ns/oclc-integration/ocn2pid/20140320"
+           elementFormDefault="qualified"
+           targetNamespace="http://oss.dbc.dk/ns/oclc-integration/ocn2pid/20140320">
+
+  <xs:element name="pidList" type="tns:PidList"/>
+  <xs:complexType name="PidList">
+    <xs:sequence>
+      <xs:element name="pid" minOccurs="0" maxOccurs="unbounded" type="tns:Pid"/>
+    </xs:sequence>
+    <xs:attribute name="resource" type="xs:anyURI" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Pid">
+    <xs:sequence>
+      <xs:element name="libraryNumber" type="xs:string"/>
+      <xs:element name="format" type="xs:string"/>
+      <xs:element name="idNumber" type="xs:string"/>
+    </xs:sequence>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+  </xs:complexType>
+
+</xs:schema>
