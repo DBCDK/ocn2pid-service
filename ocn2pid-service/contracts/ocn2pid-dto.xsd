@@ -3,13 +3,14 @@
            elementFormDefault="qualified"
            targetNamespace="http://oss.dbc.dk/ns/oclc-integration/ocn2pid/20140320">
 
-  <xs:element name="pidList" type="tns:PidList"/>
-  <xs:complexType name="PidList">
-    <xs:sequence>
-      <xs:element name="pid" minOccurs="0" maxOccurs="unbounded" type="tns:Pid"/>
-    </xs:sequence>
-    <xs:attribute name="resource" type="xs:anyURI" use="required"/>
-  </xs:complexType>
+  <xs:element name="pidList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="pid" minOccurs="0" maxOccurs="unbounded" type="tns:Pid"/>
+      </xs:sequence>
+      <xs:attribute name="resource" type="xs:anyURI" use="required"/>
+    </xs:complexType>
+  </xs:element>
 
   <xs:complexType name="Pid">
     <xs:sequence>
