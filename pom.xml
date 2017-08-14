@@ -18,6 +18,10 @@
   <properties>
     <javaee.api.version>7.0</javaee.api.version>
     <ocn-repo-api.version>1.0-SNAPSHOT</ocn-repo-api.version>
+    <dto.package.name>dk.dbc.oclc.ocn2pid.service.dto</dto.package.name>
+    <jaxb2.maven.plugin.version>2.3.1</jaxb2.maven.plugin.version>
+    <jaxb2.generated.sources>${project.build.directory}/generated-sources/jaxb</jaxb2.generated.sources>
+    <build.helper.maven.plugin.version>3.0.0</build.helper.maven.plugin.version>
   </properties>
 
   <dependencies>
@@ -64,4 +68,54 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <version>${jaxb2.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>xjc</id>
+            <goals>
+              <goal>xjc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <packageName>${dto.package.name}</packageName>
+          <sources>
+            <source>src/main/resources</source>
+          </sources>
+          <xjcSourceExcludeFilters>
+            <filter implementation="org.codehaus.mojo.jaxb2.shared.filters.pattern.PatternFileFilter">
+              <patterns>
+                <pattern>\.xml</pattern>
+              </patterns>
+            </filter>
+          </xjcSourceExcludeFilters>
+          <outputDirectory>${jaxb2.generated.sources}</outputDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${build.helper.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${jaxb2.generated.sources}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
