@@ -17,9 +17,15 @@
 
   <properties>
     <javaee.api.version>7.0</javaee.api.version>
+    <ocn-repo-api.version>1.0-SNAPSHOT</ocn-repo-api.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>dk.dbc</groupId>
+      <artifactId>ocn-repo-api</artifactId>
+      <version>${ocn-repo-api.version}</version>
+    </dependency>
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
