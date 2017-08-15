@@ -3,6 +3,7 @@ package dk.dbc.oclc.ocn2pid.service.ejb;
 import dk.dbc.oclc.ocn2pid.service.dto.ObjectFactory;
 import dk.dbc.oclc.ocn2pid.service.dto.Pid;
 import dk.dbc.oclc.ocn2pid.service.dto.PidList;
+import dk.dbc.ocnrepo.OcnRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +26,7 @@ public class OcnResolverBean {
 
     private static final Pattern PID_PATTERN = Pattern.compile("^(.+?)-(.+?):(.+)$");
 
-    @EJB
-    OcnStoreConnectorBean ocnStoreConnector;
+    @EJB OcnRepo ocnRepo;
 
     /**
      * Resolves all local PIDs associated with given OCN identifier
@@ -37,24 +37,19 @@ public class OcnResolverBean {
      * @throws EJBException on datasource communication failure, or if lookup returns a PID
      * not adhering to the PID formatting rules
      */
-    public PidList getPidListByOcn(String ocn, Set<String> libraryNumberFilter) throws EJBException {
-        try {
-            final List<String> localIds = ocnStoreConnector.getLocalIdsMappedToOcn(ocn);
-            final ObjectFactory objectFactory = new ObjectFactory();
-            final PidList pidList = objectFactory.createPidList();
-            for (String id : localIds) {
-                final Pid pid = buildPid(objectFactory, id);
-                if (libraryNumberFilter == null
-                        || libraryNumberFilter.isEmpty()
-                        || libraryNumberFilter.contains(pid.getLibraryNumber())) {
-                    pidList.getPid().add(pid);
-                }
+    public PidList getPidListByOcn(String ocn, Set<String> libraryNumberFilter) {
+        final List<String> pids = ocnRepo.pidListFromOcn(ocn);
+        final ObjectFactory objectFactory = new ObjectFactory();
+        final PidList pidList = objectFactory.createPidList();
+        for (String id : pids) {
+            final Pid pid = buildPid(objectFactory, id);
+            if (libraryNumberFilter == null
+                    || libraryNumberFilter.isEmpty()
+                    || libraryNumberFilter.contains(pid.getLibraryNumber())) {
+                pidList.getPid().add(pid);
             }
-            return pidList;
-        } catch (SQLException e) {
-            LOGGER.error("Unable to access OCN store", e);
-            throw new EJBException(e);
         }
+        return pidList;
     }
 
     private Pid buildPid(ObjectFactory objectFactory, String id) throws EJBException {
