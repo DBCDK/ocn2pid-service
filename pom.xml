@@ -12,7 +12,7 @@
 
   <artifactId>ocn2pid-service</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <packaging>war</packaging>
   <name>ocn2pid-service</name>
 
   <properties>
@@ -22,6 +22,8 @@
     <jaxb2.maven.plugin.version>2.3.1</jaxb2.maven.plugin.version>
     <jaxb2.generated.sources>${project.build.directory}/generated-sources/jaxb</jaxb2.generated.sources>
     <build.helper.maven.plugin.version>3.0.0</build.helper.maven.plugin.version>
+    <maven.war.plugin.version>3.1.0</maven.war.plugin.version>
+    <ocn2pid.context>ocn2pid</ocn2pid.context>
   </properties>
 
   <dependencies>
@@ -79,6 +81,20 @@
           <testTarget>1.8</testTarget>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>${maven.war.plugin.version}</version>
+        <configuration>
+          <webResources>
+            <resource>
+              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+              <filtering>true</filtering>
+              <targetPath>WEB-INF</targetPath>
+            </resource>
+          </webResources>
         </configuration>
       </plugin>
       <plugin>
