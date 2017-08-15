@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -62,6 +64,23 @@ public class OcnCollectionBean {
         }
 
         return pidList;
+    }
+
+    /**
+     * Gets an ocn by pid
+     * @param pid the pid to look up
+     * @returns an ocn or 404 not found if no ocn found
+     */
+    @GET
+    @Path("{pid}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getOcnByPid(@PathParam("pid") String pid) {
+        try {
+            final String ocn = ocnResolver.getOcnByPid(pid);
+            return Response.ok().entity(ocn).build();
+        } catch(NoResultException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     private void sanitizeFilter(Set<String> filter) {

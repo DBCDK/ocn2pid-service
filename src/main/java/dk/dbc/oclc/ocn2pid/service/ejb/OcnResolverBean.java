@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,16 @@ public class OcnResolverBean {
             }
         }
         return pidList;
+    }
+
+    /**
+     * Gets an ocn by pid
+     * @param pid the pid to look up
+     * @returns an ocn
+     * @throws NoResultException if no ocn found
+     */
+    public String getOcnByPid(String pid) throws NoResultException {
+        return ocnRepo.getOcnByPid(pid);
     }
 
     private Pid buildPid(ObjectFactory objectFactory, String id) throws EJBException {

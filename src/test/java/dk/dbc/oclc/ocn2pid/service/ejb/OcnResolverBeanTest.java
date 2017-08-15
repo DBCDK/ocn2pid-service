@@ -6,6 +6,7 @@ import dk.dbc.ocnrepo.OcnRepo;
 import org.junit.Test;
 
 import javax.ejb.EJBException;
+import javax.persistence.NoResultException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +15,8 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -100,6 +103,23 @@ public class OcnResolverBeanTest {
         final PidList pidList = ocnResolver.getPidListByOcn(ocn,
             new HashSet<>(Collections.singletonList("no-match")));
         assertThat(pidList.getPid().isEmpty(), is(true));
+    }
+
+    @Test
+    public void getOcnByPid() {
+        final OcnResolverBean ocnResolverBean = getInitializedBean();
+        final String pid = "870970-basis:44260441";
+        when(ocnRepo.getOcnByPid(anyString())).thenReturn("871992862");
+        final String ocn = ocnResolverBean.getOcnByPid(pid);
+        assertThat("ocn", ocn, is("871992862"));
+    }
+
+    @Test(expected = NoResultException.class)
+    public void getOcnByPid_noResultFound() {
+        when(ocnRepo.getOcnByPid(anyString())).thenThrow(NoResultException.class);
+        final OcnResolverBean ocnResolverBean = getInitializedBean();
+        ocnResolverBean.getOcnByPid("noSuchPid");
+        fail("no exception thrown");
     }
 
     private OcnResolverBean getInitializedBean() {
