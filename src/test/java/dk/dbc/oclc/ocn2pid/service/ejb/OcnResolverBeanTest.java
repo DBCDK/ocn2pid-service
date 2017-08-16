@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -109,17 +110,19 @@ public class OcnResolverBeanTest {
     public void getOcnByPid() {
         final OcnResolverBean ocnResolverBean = getInitializedBean();
         final String pid = "870970-basis:44260441";
-        when(ocnRepo.getOcnByPid(anyString())).thenReturn("871992862");
-        final String ocn = ocnResolverBean.getOcnByPid(pid);
-        assertThat("ocn", ocn, is("871992862"));
+        when(ocnRepo.getOcnByPid(anyString())).thenReturn(
+            Optional.of("871992862"));
+        final Optional<String> ocn = ocnResolverBean.getOcnByPid(pid);
+        assertThat("ocn", ocn.get(), is("871992862"));
     }
 
-    @Test(expected = NoResultException.class)
+    @Test
     public void getOcnByPid_noResultFound() {
-        when(ocnRepo.getOcnByPid(anyString())).thenThrow(NoResultException.class);
+        when(ocnRepo.getOcnByPid(anyString())).thenReturn(Optional.empty());
         final OcnResolverBean ocnResolverBean = getInitializedBean();
-        ocnResolverBean.getOcnByPid("noSuchPid");
-        fail("no exception thrown");
+        Optional<String> ocn = ocnResolverBean.getOcnByPid("noSuchPid");
+
+        assertThat("ocn not present", ocn.isPresent(), is(false));
     }
 
     private OcnResolverBean getInitializedBean() {

@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,10 +57,9 @@ public class OcnResolverBean {
     /**
      * Gets an ocn by pid
      * @param pid the pid to look up
-     * @returns an ocn
-     * @throws NoResultException if no ocn found
+     * @returns an Optional containing the ocn if present
      */
-    public String getOcnByPid(String pid) throws NoResultException {
+    public Optional<String> getOcnByPid(String pid) {
         return ocnRepo.getOcnByPid(pid);
     }
 

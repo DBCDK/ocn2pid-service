@@ -20,6 +20,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -75,12 +76,9 @@ public class OcnCollectionBean {
     @Path("{pid}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getOcnByPid(@PathParam("pid") String pid) {
-        try {
-            final String ocn = ocnResolver.getOcnByPid(pid);
-            return Response.ok().entity(ocn).build();
-        } catch(NoResultException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        final Optional<String> ocn = ocnResolver.getOcnByPid(pid);
+        if(ocn.isPresent()) return Response.ok().entity(ocn.get()).build();
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     private void sanitizeFilter(Set<String> filter) {
