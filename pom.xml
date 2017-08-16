@@ -24,6 +24,8 @@
     <build.helper.maven.plugin.version>3.0.0</build.helper.maven.plugin.version>
     <maven.war.plugin.version>3.1.0</maven.war.plugin.version>
     <ocn2pid.context>ocn2pid</ocn2pid.context>
+    <spotify-dockerfiler-plugin.version>1.3.4</spotify-dockerfiler-plugin.version>
+    <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
   </properties>
 
   <dependencies>
@@ -139,6 +141,44 @@
               <sources>
                 <source>${jaxb2.generated.sources}</source>
               </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+        <version>${spotify-dockerfiler-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <repository>docker-io.dbc.dk/ocn2pid-service</repository>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven-resources-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>process config</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/config</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/main/config</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
