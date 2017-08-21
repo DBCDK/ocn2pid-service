@@ -70,7 +70,7 @@ public class OcnCollectionBean {
     /**
      * Gets an ocn by pid
      * @param pid the pid to look up
-     * @returns an ocn or 404 not found if no ocn found
+     * @return an ocn or 404 not found if no ocn found
      */
     @GET
     @Path("{pid}")
