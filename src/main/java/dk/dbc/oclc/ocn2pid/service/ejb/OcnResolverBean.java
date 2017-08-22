@@ -1,9 +1,11 @@
 package dk.dbc.oclc.ocn2pid.service.ejb;
 
+import dk.dbc.commons.jdbc.util.CursoredResultSet;
 import dk.dbc.oclc.ocn2pid.service.dto.ObjectFactory;
 import dk.dbc.oclc.ocn2pid.service.dto.Pid;
 import dk.dbc.oclc.ocn2pid.service.dto.PidList;
 import dk.dbc.ocnrepo.OcnRepo;
+import dk.dbc.ocnrepo.dto.WorldCatEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +63,15 @@ public class OcnResolverBean {
      */
     public Optional<String> getOcnByPid(String pid) {
         return ocnRepo.getOcnByPid(pid);
+    }
+
+    /**
+     * Gets a result set of pids with local holdings records
+     *
+     * @return result set of pids with lhr
+     */
+    public CursoredResultSet<WorldCatEntity> getEntitiesWithLHR() {
+        return ocnRepo.getEntitiesWithLHR();
     }
 
     private Pid buildPid(ObjectFactory objectFactory, String id) throws EJBException {

@@ -1,8 +1,10 @@
 package dk.dbc.oclc.ocn2pid.service.ejb;
 
+import dk.dbc.commons.jdbc.util.CursoredResultSet;
 import dk.dbc.oclc.ocn2pid.service.dto.Pid;
 import dk.dbc.oclc.ocn2pid.service.dto.PidList;
 import dk.dbc.ocnrepo.OcnRepo;
+import dk.dbc.ocnrepo.dto.WorldCatEntity;
 import org.junit.Test;
 
 import javax.ejb.EJBException;
@@ -11,6 +13,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,9 +128,51 @@ public class OcnResolverBeanTest {
         assertThat("ocn not present", ocn.isPresent(), is(false));
     }
 
+    // this test is more a test of the mocks than of the actual code
+    // some proper integration testing with a real database cursor is needed
+    @Test
+    public void getEntitiesWithLHR() {
+        MockedIterator iterator = new MockedIterator(10);
+        CursoredResultSet<WorldCatEntity> resultSet = mock(CursoredResultSet.class);
+        when(resultSet.iterator()).thenReturn(iterator);
+        when(ocnRepo.getEntitiesWithLHR()).thenReturn(resultSet);
+        OcnResolverBean ocnResolverBean = getInitializedBean();
+
+        CursoredResultSet<WorldCatEntity> entities = ocnResolverBean
+            .getEntitiesWithLHR();
+        int i = 0;
+        for(WorldCatEntity entity : entities) {
+            i++;
+            if(i == 0) {
+                assertThat("pid", entity.getPid(), is("870970-basis:44260441"));
+            }
+        }
+        assertThat("total entities", i, is(10));
+        assertThat("end of stream", entities.iterator().hasNext(), is(false));
+    }
+
     private OcnResolverBean getInitializedBean() {
         final OcnResolverBean ocnResolverBean = new OcnResolverBean();
         ocnResolverBean.ocnRepo = ocnRepo;
         return ocnResolverBean;
+    }
+
+    private class MockedIterator implements Iterator<WorldCatEntity> {
+        int total;
+        int i;
+        public MockedIterator(int total) {
+            this.total = total;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return i < total;
+        }
+
+        @Override
+        public WorldCatEntity next() {
+            i++;
+            return new WorldCatEntity().withPid("870970-basis:44260441");
+        }
     }
 }
