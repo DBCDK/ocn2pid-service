@@ -93,7 +93,7 @@ public class OcnCollectionBean {
     @GET
     @Path("records-with-lhr")
     @Produces({MediaType.APPLICATION_OCTET_STREAM})
-    public Response getStream() {
+    public Response getLhrPidStream() {
         final CursoredResultSet<WorldCatEntity> entitiesWithLHR =
             ocnResolver.getEntitiesWithLHR();
         final StreamingOutput stream = os -> {
