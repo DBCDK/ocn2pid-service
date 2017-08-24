@@ -77,7 +77,7 @@ public class OcnCollectionBean {
      * @return an ocn or 404 not found if no ocn found
      */
     @GET
-    @Path("{pid}")
+    @Path("ocn-by-pid/{pid}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getOcnByPid(@PathParam("pid") String pid) {
         final Optional<String> ocn = ocnResolver.getOcnByPid(pid);
@@ -91,7 +91,7 @@ public class OcnCollectionBean {
      * @return stream of pids
      */
     @GET
-    @Path("records-with-lhr")
+    @Path("pid/lhr")
     @Produces({MediaType.APPLICATION_OCTET_STREAM})
     public Response getLhrPidStream() {
         final CursoredResultSet<WorldCatEntity> entitiesWithLHR =
