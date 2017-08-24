@@ -74,7 +74,7 @@ public class OcnCollectionBean {
     /**
      * Gets an ocn by pid
      * @param pid the pid to look up
-     * @return an ocn or 404 not found if no ocn found
+     * @return an ocn or empty response if no ocn found
      */
     @GET
     @Path("ocn-by-pid/{pid}")
@@ -82,7 +82,7 @@ public class OcnCollectionBean {
     public Response getOcnByPid(@PathParam("pid") String pid) {
         final Optional<String> ocn = ocnResolver.getOcnByPid(pid);
         if(ocn.isPresent()) return Response.ok().entity(ocn.get()).build();
-        return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.noContent().build();
     }
 
     /**
