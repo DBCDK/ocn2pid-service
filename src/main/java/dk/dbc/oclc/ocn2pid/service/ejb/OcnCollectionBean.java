@@ -1,12 +1,15 @@
 package dk.dbc.oclc.ocn2pid.service.ejb;
 
+import dk.dbc.commons.jdbc.util.CursoredResultSet;
 import dk.dbc.oclc.ocn2pid.service.dto.PidList;
+import dk.dbc.ocnrepo.dto.WorldCatEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,10 +17,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -62,6 +69,40 @@ public class OcnCollectionBean {
         }
 
         return pidList;
+    }
+
+    /**
+     * Gets an ocn by pid
+     * @param pid the pid to look up
+     * @return an ocn or empty response if no ocn found
+     */
+    @GET
+    @Path("ocn-by-pid/{pid}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getOcnByPid(@PathParam("pid") String pid) {
+        final Optional<String> ocn = ocnResolver.getOcnByPid(pid);
+        if(ocn.isPresent()) return Response.ok().entity(ocn.get()).build();
+        return Response.noContent().build();
+    }
+
+    /**
+     * Gets pids of records with lhr
+     *
+     * @return stream of pids
+     */
+    @GET
+    @Path("pid/lhr")
+    @Produces({MediaType.APPLICATION_OCTET_STREAM})
+    public Response getLhrPidStream() {
+        final CursoredResultSet<WorldCatEntity> entitiesWithLHR =
+            ocnResolver.getEntitiesWithLHR();
+        final StreamingOutput stream = os -> {
+            for(WorldCatEntity entity : entitiesWithLHR) {
+                os.write(String.format("%s\n", entity.getPid()).getBytes(
+                    StandardCharsets.UTF_8));
+            }
+        };
+        return Response.ok(stream).build();
     }
 
     private void sanitizeFilter(Set<String> filter) {
