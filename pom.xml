@@ -25,6 +25,7 @@
     <maven.war.plugin.version>3.1.0</maven.war.plugin.version>
     <ocn2pid.context>ocn2pid</ocn2pid.context>
     <spotify-dockerfiler-plugin.version>1.3.4</spotify-dockerfiler-plugin.version>
+    <docker.tag>latest</docker.tag>
     <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
   </properties>
 
@@ -164,6 +165,7 @@
         </executions>
         <configuration>
           <repository>docker-io.dbc.dk/ocn2pid-service</repository>
+          <tag>${docker.tag}</tag>
         </configuration>
       </plugin>
       <plugin>
