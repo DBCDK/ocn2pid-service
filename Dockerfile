@@ -1,7 +1,6 @@
-FROM docker.dbc.dk/payara-micro
+FROM docker.dbc.dk/payara5-micro:latest
 
-COPY target/ocn2pid-service-1.0-SNAPSHOT.war wars
-COPY target/config /payara-micro/config.d
+COPY target/ocn2pid-service-1.0-SNAPSHOT.war deployments
+COPY target/config/config.json deployments
 
-EXPOSE 4848
 EXPOSE 8080
