@@ -35,8 +35,8 @@ pipeline {
             steps {
                 step([$class: 'hudson.plugins.pmd.PmdPublisher',
                       pattern: '**/target/pmd.xml',
-                      unstableTotalAll: "0",
-                      failedTotalAll: "0"])
+                      unstableTotalAll: "4",
+                      failedTotalAll: "4"])
             }
         }
         stage("push"){
