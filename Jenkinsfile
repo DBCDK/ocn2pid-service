@@ -4,6 +4,13 @@ def workerNode = "devel9"
 
 pipeline {
     agent {label workerNode}
+    tools {
+        // refers to the name set in manage jenkins -> global tool configuration
+        maven "Maven 3"
+    }
+    environment {
+        MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Dorg.slf4j.simpleLogger.showThreadName=true"
+    }
     triggers {
         pollSCM("H/03 * * * *")
     }
@@ -16,11 +23,12 @@ pipeline {
                 script {
                     sh """#!/usr/bin/env bash
                        set -xe
-                       mvn package
-                       mvn test
-                       junit "**/target/surefire-reports/TEST-*.xml,**/target/failsafe-reports/TEST-*.xml"
+                       mvn -B clean
+                       mvn -B install
+                       mvn -B pmd:pmd verify
                        """
                 }
+                junit "**/target/surefire-reports/TEST-*.xml,**/target/failsafe-reports/TEST-*.xml"
             }
         }
         stage("PMD") {
