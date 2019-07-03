@@ -1,0 +1,10 @@
+{
+  "appName": "ocn2pid-service",
+  "jdbc": {
+    "jdbc/ocn-repo": {
+      "xa": false,
+      "url": "${DB_URL}",
+      "maxSize": "100"
+    }
+  }
+}
