@@ -24,8 +24,7 @@ pipeline {
                     sh """#!/usr/bin/env bash
                        set -xe
                        mvn -B clean
-                       mvn -B install
-                       mvn -B pmd:pmd verify
+                       mvn -B verify pmd:pmd
                        """
                 }
                 junit "**/target/surefire-reports/TEST-*.xml,**/target/failsafe-reports/TEST-*.xml"
@@ -33,6 +32,8 @@ pipeline {
         }
         stage("PMD") {
             steps {
+                // 3 PMD warnings for unused imports.
+                // Must be addressed! (sometime).
                 step([$class: 'hudson.plugins.pmd.PmdPublisher',
                       pattern: '**/target/pmd.xml',
                       unstableTotalAll: "4",
