@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo "### cleaning ocn2pid project ###"
+
+mvn clean
+docker rm -f ocn2pid-service &>/dev/null || true
+exit 0

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo "### testing ocn2pid project ###"
+
+mvn verify || exit 1
