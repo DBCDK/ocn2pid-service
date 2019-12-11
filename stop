@@ -1,0 +1,3 @@
+echo "### Stopping ocn2pid service docker ###"
+
+docker stop ocn2pid-service || exit 1

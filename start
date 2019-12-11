@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+./stop || true
+./build docker || exit 1
+
+echo "### Starting ocn2pid service docker ###"
+
+ocn2pid_service_port=${OCN2PID_SERVICE_PORT:-8080}
+docker run --rm --name ocn2pid-service -d -e JAVA_MAX_HEAP_SIZE=2G -e DB_URL=${DB_URL} -p ${ocn2pid_service_port}:8080 docker-io.dbc.dk/ocn2pid-service:devel
+
+attempts=0
+max_attempts=60
+until $(curl --output /dev/null --silent --head --fail http://localhost:${ocn2pid_service_port}/ocn2pid/status); do
+    if [[ ${attempts} -eq ${max_attempts} ]]; then
+        break
+    fi
+
+    printf '.'
+    attempts=$(($attempts+1))
+    sleep 0.5
+done
+
+echo ""
+echo "### Status for ocn2pid service ###"
+curl -vs http://localhost:${ocn2pid_service_port}/ocn2pid/status
+echo ""
