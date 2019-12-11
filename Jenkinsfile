@@ -45,9 +45,6 @@ pipeline {
 			}
 		}
 		stage("docker build") {
-			when {
-                branch "master"
-            }
 			steps {
 				sh "./build docker"
 				sh "docker push docker-io.dbc.dk/ocn2pid-service:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
