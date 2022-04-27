@@ -6,7 +6,7 @@
 echo "### Starting ocn2pid service docker ###"
 
 ocn2pid_service_port=${OCN2PID_SERVICE_PORT:-8080}
-docker run --rm --name ocn2pid-service -d -e JAVA_MAX_HEAP_SIZE=2G -e DB_URL=${DB_URL} -p ${ocn2pid_service_port}:8080 docker-io.dbc.dk/ocn2pid-service:devel
+docker run --rm --name ocn2pid-service -d -e JAVA_MAX_HEAP_SIZE=2G -e DB_URL=${DB_URL} -p ${ocn2pid_service_port}:8080 docker-metascrum.artifacts.dbccloud.dk/ocn2pid-service:devel
 
 attempts=0
 max_attempts=60

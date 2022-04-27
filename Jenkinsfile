@@ -47,14 +47,14 @@ pipeline {
 		stage("docker build") {
 			steps {
 				sh "./build docker"
-				sh "docker push docker-io.dbc.dk/ocn2pid-service:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+				sh "docker push docker-metascrum.artifacts.dbccloud.dk/ocn2pid-service:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
 			}
 		}
 		stage("bump docker tag in ocn2pid-secrets") {
 			agent {
 				docker {
 					label workerNode
-					image "docker.dbc.dk/build-env:latest"
+					image "docker-dbc.artifacts.dbccloud.dk/build-env:latest"
 					alwaysPull true
 				}
 			}
