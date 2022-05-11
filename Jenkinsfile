@@ -7,7 +7,7 @@ pipeline {
 	tools {
 		// refers to the name set in manage jenkins -> global tool configuration
 		jdk 'jdk11'
-		maven "Maven 3.5"
+		maven "maven 3.5"
 	}
 	environment {
 		GITLAB_PRIVATE_TOKEN = credentials("metascrum-gitlab-api-token")
