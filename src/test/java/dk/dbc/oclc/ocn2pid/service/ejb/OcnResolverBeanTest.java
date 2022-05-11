@@ -8,7 +8,6 @@ import dk.dbc.ocnrepo.dto.WorldCatEntity;
 import org.junit.Test;
 
 import javax.ejb.EJBException;
-import javax.persistence.NoResultException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,8 +18,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
