@@ -20,7 +20,7 @@
     <build.helper.maven.plugin.version>3.0.0</build.helper.maven.plugin.version>
     <dto.package.name>dk.dbc.oclc.ocn2pid.service.dto</dto.package.name>
     <jaxb2.generated.sources>${project.build.directory}/generated-sources/jaxb</jaxb2.generated.sources>
-    <jaxb2.maven.plugin.version>2.3.1</jaxb2.maven.plugin.version>
+    <jaxb2.maven.plugin.version>3.1.0</jaxb2.maven.plugin.version>
     <ocn2pid.context>ocn2pid</ocn2pid.context>
     <ocn-repo-api.version>1.0-SNAPSHOT</ocn-repo-api.version>
     <serviceutils.version>0.1-SNAPSHOT</serviceutils.version>
@@ -65,6 +65,11 @@
       <groupId>dk.dbc</groupId>
       <artifactId>serviceutils</artifactId>
       <version>${serviceutils.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>4.0.0</version>
     </dependency>
   </dependencies>
 
