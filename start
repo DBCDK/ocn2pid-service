@@ -22,5 +22,5 @@ done
 
 echo ""
 echo "### Status for ocn2pid service ###"
-curl -vs http://localhost:${ocn2pid_service_port}/ocn2pid/status
+curl -vs http://localhost:${ocn2pid_service_port}/health/ready
 echo ""
