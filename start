@@ -10,7 +10,7 @@ docker run --rm --name ocn2pid-service -d -e JAVA_MAX_HEAP_SIZE=2G -e DB_URL=${D
 
 attempts=0
 max_attempts=60
-until $(curl --output /dev/null --silent --head --fail http://localhost:${ocn2pid_service_port}/ocn2pid/status); do
+until $(curl --output /dev/null --silent --head --fail http://localhost:${ocn2pid_service_port}/health/ready); do
     if [[ ${attempts} -eq ${max_attempts} ]]; then
         break
     fi
