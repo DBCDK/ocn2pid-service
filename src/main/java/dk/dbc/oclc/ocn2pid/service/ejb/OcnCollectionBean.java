@@ -41,37 +41,41 @@ public class OcnCollectionBean {
 
     /**
      * Resolves all local PIDs associated with given OCN identifier
-     * @param uriInfo application and request URI information
-     * @param ocn OCN identifier
+     *
+     * @param uriInfo             application and request URI information
+     * @param ocn                 OCN identifier
      * @param libraryNumberFilter set of library numbers to be included in the response,
-     * if empty all library numbers will be included
+     *                            if empty all library numbers will be included
      * @return PidList (i.e. a HTTP 200 OK response with PidList entity)
      * @throws EJBException on internal server error
      */
     @GET
     @Path("{ocn}")
-    @Produces({ MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_XML})
     public PidList getPidListByOcn(@Context UriInfo uriInfo, @PathParam("ocn") String ocn,
-            @QueryParam("libraryNumberFilter") Set<String> libraryNumberFilter) throws EJBException {
-        LOGGER.debug("Called");
-        final String resource = uriInfo.getRequestUri().toString();
-        LOGGER.trace("Resource: {}", resource);
+                                   @QueryParam("libraryNumberFilter") Set<String> libraryNumberFilter) throws EJBException {
+        try {
+            final String resource = uriInfo.getRequestUri().toString();
 
-        sanitizeFilter(libraryNumberFilter);
+            sanitizeFilter(libraryNumberFilter);
 
-        final PidList pidList = ocnResolver.getPidListByOcn(ocn, libraryNumberFilter);
+            final PidList pidList = ocnResolver.getPidListByOcn(ocn, libraryNumberFilter);
 
-        pidList.setResource(resource);
+            pidList.setResource(resource);
 
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Exit with {}", jaxbObjectToString(PidList.class, pidList));
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Exit with {}", jaxbObjectToString(PidList.class, pidList));
+            }
+
+            return pidList;
+        } finally {
+            LOGGER.info("GET /ocn-collection/{}", ocn);
         }
-
-        return pidList;
     }
 
     /**
      * Gets an ocn by pid
+     *
      * @param pid the pid to look up
      * @return an ocn or empty response if no ocn found
      */
@@ -79,9 +83,16 @@ public class OcnCollectionBean {
     @Path("ocn-by-pid/{pid}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getOcnByPid(@PathParam("pid") String pid) {
-        final Optional<String> ocn = ocnResolver.getOcnByPid(pid);
-        if(ocn.isPresent()) return Response.ok().entity(ocn.get()).build();
-        return Response.noContent().build();
+        try {
+            final Optional<String> ocn = ocnResolver.getOcnByPid(pid);
+            if (ocn.isPresent()) {
+                return Response.ok().entity(ocn.get()).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } finally {
+            LOGGER.info("GET /ocn-collection/ocn-by-pid/{}", pid);
+        }
     }
 
     /**
@@ -93,23 +104,23 @@ public class OcnCollectionBean {
     @Path("pid/lhr")
     @Produces({MediaType.APPLICATION_OCTET_STREAM})
     public Response getLhrPidStream() {
-        final CursoredResultSet<WorldCatEntity> entitiesWithLHR =
-            ocnResolver.getEntitiesWithLHR();
-        final StreamingOutput stream = os -> {
-            for(WorldCatEntity entity : entitiesWithLHR) {
-                os.write(String.format("%s\n", entity.getPid()).getBytes(
-                    StandardCharsets.UTF_8));
-            }
-        };
-        return Response.ok(stream).build();
+        try {
+            final CursoredResultSet<WorldCatEntity> entitiesWithLHR =
+                    ocnResolver.getEntitiesWithLHR();
+            final StreamingOutput stream = os -> {
+                for (WorldCatEntity entity : entitiesWithLHR) {
+                    os.write(String.format("%s%n", entity.getPid()).getBytes(
+                            StandardCharsets.UTF_8));
+                }
+            };
+            return Response.ok(stream).build();
+        } finally {
+            LOGGER.info("GET /ocn-collection/pid/lhr");
+        }
     }
 
     private void sanitizeFilter(Set<String> filter) {
-        for (final String member : filter) {
-            if ("". equals(member.trim())) {
-                filter.remove(member);
-            }
-        }
+        filter.removeIf(member -> "".equals(member.trim()));
     }
 
     private <T> String jaxbObjectToString(Class<T> tClass, T object) {
