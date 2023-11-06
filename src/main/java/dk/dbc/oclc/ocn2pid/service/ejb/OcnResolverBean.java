@@ -9,10 +9,10 @@ import dk.dbc.ocnrepo.dto.WorldCatEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.EJB;
-import javax.ejb.EJBException;
-import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
+import jakarta.ejb.EJB;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.NoResultException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;

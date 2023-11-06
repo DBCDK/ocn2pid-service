@@ -2,8 +2,8 @@ package dk.dbc.oclc.ocn2pid.service.rest;
 
 import dk.dbc.oclc.ocn2pid.service.ejb.OcnCollectionBean;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 import java.util.Set;
 
 /**

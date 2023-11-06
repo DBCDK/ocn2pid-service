@@ -7,7 +7,7 @@ import dk.dbc.ocnrepo.OcnRepo;
 import dk.dbc.ocnrepo.dto.WorldCatEntity;
 import org.junit.Test;
 
-import javax.ejb.EJBException;
+import jakarta.ejb.EJBException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;

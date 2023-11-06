@@ -7,13 +7,12 @@
     <parent>
         <groupId>dk.dbc</groupId>
         <artifactId>microservice-pom</artifactId>
-        <version>java11-old-payara5</version>
+        <version>java11-SNAPSHOT</version>
     </parent>
 
     <artifactId>ocn2pid-service</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>ocn2pid-service</name>
 
     <properties>
         <build.helper.maven.plugin.version>3.0.0</build.helper.maven.plugin.version>
@@ -21,30 +20,13 @@
         <jaxb2.generated.sources>${project.build.directory}/generated-sources/jaxb</jaxb2.generated.sources>
         <jaxb2.maven.plugin.version>3.1.0</jaxb2.maven.plugin.version>
         <ocn2pid.context>ocn2pid</ocn2pid.context>
-        <ocn-repo-api.version>1.0-SNAPSHOT</ocn-repo-api.version>
+        <ocn-repo-api.version>2.0-SNAPSHOT</ocn-repo-api.version>
     </properties>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>mavenrepo.dbc.dk</id>
-            <url>https://mavenrepo.dbc.dk/content/groups/public</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <repositories>
         <repository>
             <id>mavenrepo.dbc.dk</id>
             <url>https://mavenrepo.dbc.dk/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
 
@@ -55,8 +37,8 @@
             <version>${ocn-repo-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -81,12 +63,11 @@
         <dependency>
             <groupId>dk.dbc</groupId>
             <artifactId>dbc-commons-jdbc-util</artifactId>
-            <version>1.3-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
@@ -96,11 +77,9 @@
             <groupId>org.eclipse.microprofile.health</groupId>
             <artifactId>microprofile-health-api</artifactId>
         </dependency>
-
-       <dependency>
+        <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>4.0.0</version>
         </dependency>
     </dependencies>
 
