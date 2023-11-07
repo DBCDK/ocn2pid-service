@@ -6,7 +6,7 @@ import dk.dbc.oclc.ocn2pid.service.dto.PidList;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
