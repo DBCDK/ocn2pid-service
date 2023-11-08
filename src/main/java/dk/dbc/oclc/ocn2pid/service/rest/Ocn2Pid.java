@@ -21,6 +21,6 @@ public class Ocn2Pid extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        return Set.copyOf(CLASSES);
+        return CLASSES;
     }
 }
