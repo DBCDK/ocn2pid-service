@@ -12,6 +12,10 @@ pipeline {
 	environment {
 		GITLAB_PRIVATE_TOKEN = credentials("metascrum-gitlab-api-token")
 		MAVEN_OPTS="-Dorg.slf4j.simpleLogger.showThreadName=true"
+		SONAR_SCANNER = "$SONAR_SCANNER_HOME/bin/sonar-scanner"
+		SONAR_PROJECT_KEY = "ocn2pid-service"
+		SONAR_SOURCES = "src"
+		SONAR_TESTS = "test"
 	}
 	triggers {
 		pollSCM("H/03 * * * *")
@@ -43,6 +47,37 @@ pipeline {
 					  pattern: '**/target/pmd.xml',
 					  unstableTotalAll: "4",
 					  failedTotalAll: "4"])
+			}
+		}
+		stage("sonarqube") {
+			steps {
+				withSonarQubeEnv(installationName: 'sonarqube.dbc.dk') {
+					script {
+						def status = 0
+
+						def sonarOptions = "-Dsonar.branch.name=${BRANCH_NAME}"
+						if (env.BRANCH_NAME != 'master') {
+							sonarOptions += " -Dsonar.newCode.referenceBranch=master"
+						}
+
+						// Do sonar via maven
+						status += sh returnStatus: true, script: """
+                            mvn -B $sonarOptions sonar:sonar
+                        """
+
+						if (status != 0) {
+							error("build failed")
+						}
+					}
+				}
+			}
+		}
+		stage("quality gate") {
+			steps {
+				// wait for analysis results
+				timeout(time: 1, unit: 'HOURS') {
+					waitForQualityGate abortPipeline: true
+				}
 			}
 		}
 		stage("docker build") {
