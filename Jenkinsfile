@@ -4,11 +4,6 @@ def workerNode = "devel11"
 
 pipeline {
 	agent {label workerNode}
-	tools {
-		// refers to the name set in manage jenkins -> global tool configuration
-		jdk 'jdk11'
-		maven 'Maven 3'
-	}
 	environment {
 		GITLAB_PRIVATE_TOKEN = credentials("metascrum-gitlab-api-token")
 		MAVEN_OPTS="-Dorg.slf4j.simpleLogger.showThreadName=true"
