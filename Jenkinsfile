@@ -11,6 +11,7 @@ pipeline {
 		SONAR_PROJECT_KEY = "ocn2pid-service"
 		SONAR_SOURCES = "src"
 		SONAR_TESTS = "test"
+        DOCKER_IMAGE_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
 	}
 	triggers {
 		pollSCM("H/03 * * * *")
@@ -81,7 +82,7 @@ pipeline {
                         env.GIT_SSH_COMMAND = "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${sshkeyfile}"
                         sh '''
                               nix run --refresh git+https://gitlab.dbc.dk/public-de-team/gitops-secrets-set-variables.git \
-                                metascrum-staging:OCN2PID_SERVICE_VERSION=${env.BRANCH_NAME}-${env.BUILD_NUMBER}
+                                metascrum-staging:OCN2PID_SERVICE_VERSION=$DOCKER_IMAGE_TAG
                            '''
                     }
                 }
