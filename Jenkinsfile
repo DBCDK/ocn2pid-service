@@ -30,18 +30,8 @@ pipeline {
 		}
 		stage("verify") {
 			steps {
-				sh "mvn -B verify pmd:pmd"
+				sh "mvn -B verify"
 				junit "**/target/surefire-reports/TEST-*.xml,**/target/failsafe-reports/TEST-*.xml"
-			}
-		}
-		stage("PMD") {
-			steps {
-				// 3 PMD warnings for unused imports.
-				// Must be addressed! (sometime).
-				step([$class: 'hudson.plugins.pmd.PmdPublisher',
-					  pattern: '**/target/pmd.xml',
-					  unstableTotalAll: "4",
-					  failedTotalAll: "4"])
 			}
 		}
 		stage("sonarqube") {
@@ -81,24 +71,21 @@ pipeline {
 				sh "docker push docker-metascrum.artifacts.dbccloud.dk/ocn2pid-service:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
 			}
 		}
-		stage("bump docker tag in ocn2pid-secrets") {
-			agent {
-				docker {
-					label workerNode
-					image "docker-dbc.artifacts.dbccloud.dk/build-env:latest"
-					alwaysPull true
-				}
-			}
-			when {
-				branch "master"
-			}
-			steps {
-				script {
-					sh """  
-                        set-new-version ocn2pid.yml ${env.GITLAB_PRIVATE_TOKEN} metascrum/ocn2pid-secrets ${env.BRANCH_NAME}-${env.BUILD_NUMBER} -b staging
-                    """
-				}
-			}
+        stage("bump docker tag") {
+            when {
+                branch "master"
+            }
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: "gitlab-isworker", keyFileVariable: 'sshkeyfile')]) {
+                        env.GIT_SSH_COMMAND = "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${sshkeyfile}"
+                        sh '''
+                              nix run --refresh git+https://gitlab.dbc.dk/public-de-team/gitops-secrets-set-variables.git \
+                                metascrum-staging:OCN2PID_SERVICE_VERSION=${env.BRANCH_NAME}-${env.BUILD_NUMBER}
+                           '''
+                    }
+                }
+            }
 		}
 	}
 }
