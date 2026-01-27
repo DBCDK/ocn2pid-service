@@ -1,20 +1,10 @@
 #!groovy
 
-def workerNode = "devel11"
+def workerNode = "devel12"
 
 pipeline {
 	agent {label workerNode}
-	environment {
-		GITLAB_PRIVATE_TOKEN = credentials("metascrum-gitlab-api-token")
-		MAVEN_OPTS="-Dorg.slf4j.simpleLogger.showThreadName=true"
-		SONAR_SCANNER = "$SONAR_SCANNER_HOME/bin/sonar-scanner"
-		SONAR_PROJECT_KEY = "ocn2pid-service"
-		SONAR_SOURCES = "src"
-		SONAR_TESTS = "test"
-        DOCKER_IMAGE_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-	}
 	triggers {
-		pollSCM("H/03 * * * *")
 		upstream(upstreamProjects: "Docker-payara6-bump-trigger",
             threshold: hudson.model.Result.SUCCESS)
 	}
@@ -29,35 +19,34 @@ pipeline {
 				checkout scm
 			}
 		}
-		stage("verify") {
-			steps {
-				sh "mvn -B verify"
-				junit "**/target/surefire-reports/TEST-*.xml,**/target/failsafe-reports/TEST-*.xml"
-			}
-		}
-		stage("sonarqube") {
-			steps {
-				withSonarQubeEnv(installationName: 'sonarqube.dbc.dk') {
-					script {
-						def status = 0
-
-						def sonarOptions = "-Dsonar.branch.name=${BRANCH_NAME}"
-						if (env.BRANCH_NAME != 'master') {
-							sonarOptions += " -Dsonar.newCode.referenceBranch=master"
-						}
-
-						// Do sonar via maven
-						status += sh returnStatus: true, script: """
-                            mvn -B $sonarOptions sonar:sonar
+        stage("build") {
+            steps {
+                withSonarQubeEnv(installationName: 'sonarqube.dbc.dk') {
+                    script {
+                        def status = sh returnStatus: true, script: """
+                        mvn -B -Dmaven.repo.local=$WORKSPACE/.repo --no-transfer-progress verify
                         """
 
-						if (status != 0) {
-							error("build failed")
-						}
-					}
-				}
-			}
-		}
+                        def sonarOptions = "-Dsonar.branch.name=$BRANCH_NAME"
+                        if (env.BRANCH_NAME != 'master') {
+                            sonarOptions += " -Dsonar.newCode.referenceBranch=master"
+                        }
+                        status += sh returnStatus: true, script: """
+                        mvn -B -Dmaven.repo.local=$WORKSPACE/.repo --no-transfer-progress $sonarOptions sonar:sonar
+                        """
+
+                        junit testResults: '**/target/*-reports/*.xml'
+
+                        def javadoc = scanForIssues tool: [$class: 'JavaDoc']
+                        publishIssues issues: [javadoc], unstableTotalAll: 1
+
+                        if (status != 0) {
+                            error("build failed")
+                        }
+                    }
+                }
+            }
+        }
 		stage("quality gate") {
 			steps {
 				// wait for analysis results
