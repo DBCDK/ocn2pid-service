@@ -7,11 +7,11 @@
     <parent>
         <groupId>dk.dbc</groupId>
         <artifactId>microservice-pom</artifactId>
-        <version>java17-SNAPSHOT</version>
+        <version>java21-SNAPSHOT</version>
     </parent>
 
     <artifactId>ocn2pid-service</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>21.1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <properties>
@@ -20,8 +20,7 @@
         <jaxb2.generated.sources>${project.build.directory}/generated-sources/jaxb</jaxb2.generated.sources>
         <jaxb2.maven.plugin.version>3.1.0</jaxb2.maven.plugin.version>
         <ocn2pid.context>ocn2pid</ocn2pid.context>
-        <ocn-repo-api.version>2.0-SNAPSHOT</ocn-repo-api.version>
-        <sonar.projectKey>ocn2pid-service</sonar.projectKey>
+        <sonar.projectKey>${project.artifactId}</sonar.projectKey>
     </properties>
 
     <repositories>
@@ -35,7 +34,7 @@
         <dependency>
             <groupId>dk.dbc</groupId>
             <artifactId>ocn-repo-api</artifactId>
-            <version>${ocn-repo-api.version}</version>
+            <version>21.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>jakarta.platform</groupId>
@@ -81,10 +80,6 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
     </dependencies>
 
