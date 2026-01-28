@@ -3,22 +3,25 @@
 def workerNode = "devel12"
 
 pipeline {
-	agent {label workerNode}
-	triggers {
-		upstream(upstreamProjects: "Docker-payara6-bump-trigger",
+    agent {label workerNode}
+    environment {
+        DOCKER_IMAGE_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+    }
+    triggers {
+        upstream(upstreamProjects: "Docker-payara6-bump-trigger",
             threshold: hudson.model.Result.SUCCESS)
-	}
-	options {
-		timestamps()
-		disableConcurrentBuilds()
-	}
-	stages {
-		stage("clear workspace") {
-			steps {
-				deleteDir()
-				checkout scm
-			}
-		}
+    }
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+    }
+    stages {
+        stage("clear workspace") {
+            steps {
+                deleteDir()
+                checkout scm
+            }
+        }
         stage("build") {
             steps {
                 withSonarQubeEnv(installationName: 'sonarqube.dbc.dk') {
