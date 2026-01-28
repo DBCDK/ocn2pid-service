@@ -14,7 +14,7 @@ to DBC record identifiers (PIDs).
 
 **Requirements**
 
-To build this project JDK 1.8 and Apache Maven is required.
+To build this project JDK 21 and Apache Maven is required.
 
 To start a local instance, docker is required.
 
